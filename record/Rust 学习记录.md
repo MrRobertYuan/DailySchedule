@@ -2,6 +2,10 @@
 
 # Rust 学习记录
 
+比较了几个学习的教程，发现还是跟着 Rust 语言圣经的学习效率最高
+
+https://course.rs/about-book.html
+
 ## Day0
 
 ### 下载并配置环境
@@ -52,7 +56,10 @@ Cargo 是 Rust 的构建系统和包管理器，是用来管理项目的依赖�
 cargo new		// 创建
 cargo build		// 搭建
 cargo run		// 运行
+cargo check 	// 检查编译
 ```
+
+可以加上 `--release` 来生成可发布的更高效的程序
 
 #### 在 VSCode 中配置 Rust 工程
 
@@ -68,7 +75,7 @@ cargo run		// 运行
 ├── src/
 │   ├── lib.rs								# 默认的库文件
 │   ├── main.rs								# 默认的可执行文件
-│   └── bin/								# qi'ta
+│   └── bin/								# 其他的可执行文件
 │       ├── named-executable.rs
 │       ├── another-executable.rs
 │       └── multi-file-executable/
@@ -115,3 +122,18 @@ Dependencies 部分描述的是项目需要满足的前置条件，可以是 cra
 
 具体的使用可以查阅 Cargo Book：https://doc.rust-lang.org/cargo/reference/
 
+
+
+### Hello-World+
+
+![image-20221018170454668](..\images\Hello-World-Plus.png)
+
+首先可以看到 RA 插件自带的类型推理，而且它不需要配置 .vscode 中的编译文件，就可以直接运行和调试，非常方便。
+
+其次可以看到输出的字符串中可以使用各个地方的语言，这是因为Rust支持UTF-8来编码
+
+再次可以看到 println 后的 ！，这是 宏 操作符。
+
+同时可以看到输出的字符串中使用了 {} 来占位，它可以自动识别数据例子输出
+
+同时可以看到 for 循环中不能直接对集合类型循环，需要变成迭代器才能循环。（for 可以隐式地把集合变成迭代器）
