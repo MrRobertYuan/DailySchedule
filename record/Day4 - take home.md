@@ -26,6 +26,12 @@ let s:Box<&str> = "hello".into();
 let s = String::new();
 ```
 
+这个函数可以生成初始大小为 n 的String
+
+```
+let s = String::with_capacity(n);
+```
+
 
 
 ### 转义字符串
@@ -87,3 +93,68 @@ fn main() {
 ```
 
 所以这样也是对的。
+
+
+
+### String & &str
+
+String 转为 &str 有两种方法
+
+```
+str = &string
+str = string.as_str()
+```
+
+
+
+记得可以使用可变引用来改变字符串的值
+
+```
+let slice3: &mut String = &mut s;
+```
+
+
+
+遍历一个 UTF-8 字符串中的所有字符
+
+```
+for (i,c) in s.chars().enumerate()
+```
+
+
+
+如果想按照切片一样对 UTF-8 字符取段，使用`utf8_slice`
+
+```
+use utf8_slice;
+fn main() {
+   let s = "The 🚀 goes to the 🌑!";
+
+   let rocket = utf8_slice::slice(s, 4, 5);
+   // Will equal "🚀"
+}
+```
+
+
+
+如果想通过字节数组转成 String，使用`from_utf8()` 
+
+```
+let v = vec![104, 101, 108, 108, 111];
+
+// 将字节数组转换成 String
+let s1 = String::from_utf8(v).unwrap();    
+```
+
+**疑问：unwrap() 函数的作用**
+
+
+
+### 字符串的函数
+
+```
+s.as_mut_ptr();
+s.len();
+s.capcacity();
+```
+
