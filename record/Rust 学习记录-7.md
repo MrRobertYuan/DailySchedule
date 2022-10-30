@@ -123,3 +123,118 @@ Box操作：在堆上分配一个对象，然后用一个栈上的指针指向�
 
 ### 关联类型
 
+有点像关联函数的使用方法。
+
+是可以在特征中定义的类型：
+
+```
+pub trait Iterator {
+	type Item;
+	fn next(&mut self) -> Option<Self::Item>;
+}
+```
+
+这个是定义特征
+
+```
+impl Iterator for Counter {
+	type Item = u32;
+	
+	fn next(&mut self) -> Option<Self::Item> {
+		//
+	}
+}
+```
+
+这个是在要应用这个特征的结构体上的实现，需要对每一个用这个特征的结构体都需要定义自己的关联类型。
+
+可以在某种程度上减少泛型的复杂度：
+
+例如一个需要两个泛型的特征：
+
+```
+trait Container<A, B> {
+	fn contains(&self, a: A, b: B) -> bool;
+}
+```
+
+如果需要定义一个涉及这个特征的函数，就必须把这两个泛型加上：
+
+```
+fn difference<A,B,T>(contianer: &T) -> i32
+where T: Container<A,B>{}
+```
+
+这里类型 T 需要是一个满足 Container 特征的类型，但是 Container 自己带两个泛型参数，所以写起来很麻烦，就可以把这两个泛型类型作为关联类型放在里里面：
+
+```
+trait Container{
+	type A;
+	type B;
+	fn contains(&self, a: &Self::A, b: &Self::B) -> bool;
+}
+fn difference<T: Container>(container: &T){}
+```
+
+### 默认泛型类型参数
+
+当给特征加一个泛型参数的时候，可以给他一个默认的具体类型，例如标准库中的加法
+
+```
+trait Add<RHS=Self> {
+	type Output;
+	
+	fn add(self, rhs: RHS) -> Self::Output;
+}
+```
+
+这里就是你可以为加法设置一个加数的类型，如果不设置，就会默认加自己
+
+应用的时候，如果不需要设置其他的加法
+
+```
+impl Add for struct{
+
+}
+impl Add<SOME_TYPE> for struct{
+
+}
+```
+
+
+
+### 调用同名的方法
+
+如果不同的特征中有同名的方法，甚至结构体自己有自己的同名方法，会默认调用方法
+
+如果想要调用特征中的方法，则需要使用 `Trait::func(&struct)` 这种形式取调用
+
+这种是对于函数中有引用 `Self` 的方法可以这样使用
+
+如果对于没有 `Self` 的方法，例如关联函数，就需要使用完全限定语法：
+
+```
+<Type as Trait>::function()
+```
+
+
+
+### 在特征定义上加特征约束
+
+```
+use std::fmt::Display;
+
+trait OutlinePrint: Display{
+	// ... .to_string()
+}
+```
+
+这个 `OutlinePrint` 就是要求其同时具有 `Display` 的特征
+
+
+
+### newtype
+
+之前有一个孤儿原则，就是不能对一个标准库的类型实现一个特征
+
+但是可以定义一个新的 type，只包括一个已知类型本身，然后对这个包装后的类型实现特征
